@@ -28,6 +28,9 @@ public class Database extends SQLiteOpenHelper {
         super(context, databaseName, null, databaseVersion);
     }
 
+
+    // Create Tables
+
     @Override
     public void onCreate(SQLiteDatabase sqldb) {
         String createTaskTable = "create table " + taskTable + "(" + task +  " title" + ")";
@@ -44,73 +47,26 @@ public class Database extends SQLiteOpenHelper {
         onCreate(sqldb);
     }
 
+
+    // Add "Task" data to the table
     void addTaskRecord(String value) {
         String a = "'" + value + "'";
         this.getWritableDatabase().execSQL("insert into " + taskTable + " values (" + a + ")");
     }
 
+    // Add "Calendar" event to the table
     void addCalRecord(String value, int month, int day, int year) {
         String a = "'" + value + "'";
         this.getWritableDatabase().execSQL("insert into " + calTable + " values (" + a + ", " + month + ", " + day + ", " + year + ")");
     }
 
+    // Add "Chat" message to the table
     void addChatRecord(String value) {
         String a = "'" + value + "'";
         this.getWritableDatabase().execSQL("insert into " + chatTable + " values (" + a + ")");
     }
 
-//
-//    public String getTaskRecord() {
-//        Cursor cur = this.getWritableDatabase().rawQuery("select * from taskTable", new String [] {});
-//        String text = "";
-//        if (cur.moveToFirst()) {
-//            while (!cur.isAfterLast()) {
-//                int count = cur.getColumnCount();
-//                for (int i = 0; i < count; i++) {
-//                    text = text + cur.getString(i);
-//                }
-//                Log.d("Tasks Database: ", text);
-//                cur.moveToNext();
-//            }
-//        }
-//        cur.close();
-//        return text;
-//    }
-//
-//    public String getCalRecord() {
-//        Cursor cur = this.getWritableDatabase().rawQuery("select * from calTable", new String [] {});
-//        String text = "";
-//        if (cur.moveToFirst()) {
-//            while (!cur.isAfterLast()) {
-//                int count = cur.getColumnCount();
-//                for (int i = 0; i < count; i++) {
-//                    text = text + cur.getString(i);
-//                }
-//                Log.d("Database: ", text);
-//                cur.moveToNext();
-//            }
-//        }
-//        cur.close();
-//        return text;
-//    }
-//
-//    public String getChatRecord() {
-//        Cursor cur = this.getWritableDatabase().rawQuery("select * from chatTable", new String [] {});
-//        String text = "";
-//        if (cur.moveToFirst()) {
-//            while (!cur.isAfterLast()) {
-//                int count = cur.getColumnCount();
-//                for (int i = 0; i < count; i++) {
-//                    text = text + cur.getString(i);
-//                }
-//                Log.d("Database: ", text);
-//                cur.moveToNext();
-//            }
-//        }
-//        cur.close();
-//        return text;
-//    }
-
+    // Read through the "Tasks" Table and return the data in terms of JSON
     JSONArray tasksResults() {
         Cursor cursor = this.getReadableDatabase().rawQuery("select * from taskTable", new String [] {});
         JSONArray resultSet = new JSONArray();
@@ -147,6 +103,7 @@ public class Database extends SQLiteOpenHelper {
         return resultSet;
     }
 
+    // Read through the "Cal" Table and return the data in terms of JSON
     JSONArray calResults() {
         Cursor cursor = this.getReadableDatabase().rawQuery("select * from calTable", new String [] {});
         JSONArray resultSet = new JSONArray();
@@ -183,6 +140,7 @@ public class Database extends SQLiteOpenHelper {
         return resultSet;
     }
 
+    // Read through the "Chat" Table and return the data in terms of JSON
     JSONArray chatResults() {
         Cursor cursor = this.getReadableDatabase().rawQuery("select * from chatTable", new String [] {});
         JSONArray resultSet = new JSONArray();

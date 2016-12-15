@@ -24,7 +24,7 @@ public class Server {
     private ServerSocket serverSocket;
     private static final int socketServerPORT = 8080;
     private String input, title, message, tasks;
-    int month, day, year, event;
+    int month, day, year;
 
     Server(MainActivity activity) {
         this.activity = activity;
@@ -53,8 +53,12 @@ public class Server {
         public void run() {
             try {
                 serverSocket = new ServerSocket(socketServerPORT);
+
                 while (true) {
                     Socket socket = serverSocket.accept();
+
+                    // Read data using Scanner
+
                     InputStream inStream = socket.getInputStream();
                     Scanner in = new Scanner(inStream);
 
@@ -67,14 +71,19 @@ public class Server {
                         isCal = firstThree.matches("cal");
                         isCht = firstThree.matches("cht");
 
+                        // If the first three letters are tsk, add the Task to the Database
+
                         if (isTsk) {
                             tasks = input.substring(3, input.length());
                             Log.d("2", tasks);
                             if (input.equals("request")) {} else {
+
+                                // Adding the "Task" data to the database
                                 Database db = new Database(activity.getApplicationContext());
                                 db.addTaskRecord(tasks);
                                 try (OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))
                                 {
+                                    // Send back data from the Database to the Client
                                     out.write(db.tasksResults().toString());
                                     out.flush();
                                 }
@@ -92,10 +101,13 @@ public class Server {
                             Log.d("Year", String.valueOf(year));
                             Log.d("Title", title);
                             if (input.equals("request")) {} else {
+
+                                // Adding the "Calendar" event to the database
                                 Database db = new Database(activity.getApplicationContext());
                                 db.addCalRecord(title, month, day, year);
                                 try (OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))
                                 {
+                                    // Send back data from the Database to the Client
                                     out.write(db.calResults().toString());
                                     out.flush();
                                 }
@@ -107,10 +119,13 @@ public class Server {
                             message = input.substring(3, input.length());
                             Log.d("Chat", message);
                             if (message.equals("request")) {} else {
+
+                                // Adding the "Chat" messages to the database
                                 Database db = new Database(activity.getApplicationContext());
                                 db.addChatRecord(message);
                                 try (OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))
                                 {
+                                    // Send back data from the Database to the Client
                                     out.write(db.chatResults().toString());
                                     out.flush();
                                 }
@@ -124,6 +139,8 @@ public class Server {
             }
         }
     }
+
+    // A method to get the IP Address of the Server App
 
     public String getIpAddress() {
         String ip = "";
